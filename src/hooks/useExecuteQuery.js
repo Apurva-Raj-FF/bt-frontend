@@ -24,6 +24,37 @@ const useExecuteQuery = () => {
   const [responseData, setResponseData] = useState(sharedResponseData);
 
   /**
+   * Load an existing strategy by ID and set in shared state so charts can render
+   */
+  const loadStrategy = async (strategyId) => {
+    if (!strategyId) return null;
+    setLoading(true);
+    sharedLoading = true;
+    setError(null);
+    sharedError = null;
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(API_ENDPOINTS.GET_STRATEGY, {
+        params: { strategy_id: strategyId },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      // Normalize to same shape used by execute (with output root)
+      const normalized = { status: "Success", output: response.data };
+      setResponseData(normalized);
+      sharedResponseData = normalized;
+      return normalized;
+    } catch (err) {
+      const errorMessage = err.response?.data || err.message;
+      setError(errorMessage);
+      sharedError = errorMessage;
+      console.error("Error loading strategy:", errorMessage);
+    } finally {
+      setLoading(false);
+      sharedLoading = false;
+    }
+  };
+
+  /**
    * Executes a trading query with the provided parameters
    *
    * @param {Object} queryResults - The query parameters and data
@@ -101,7 +132,7 @@ const useExecuteQuery = () => {
     }
   };
 
-  return { executeQuery, saveStrategy, loading, error, responseData };
+  return { executeQuery, loadStrategy, saveStrategy, loading, error, responseData };
 };
 
 export default useExecuteQuery;

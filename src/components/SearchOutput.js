@@ -47,7 +47,7 @@ import useExecuteQuery from "../hooks/useExecuteQuery";
 import { OutputOutlined } from "@mui/icons-material";
 
 const SearchOutput = forwardRef((props, ref) => {
-  const { responseData } = useExecuteQuery();
+  const { responseData, loadStrategy } = useExecuteQuery();
   const [portfolioData, setPortfolioData] = useState({
     ippf: {},
     pfst: [],
@@ -64,6 +64,14 @@ const SearchOutput = forwardRef((props, ref) => {
       setPortfolioData(responseData.output);
     }
   }, [responseData]);
+
+  // Load strategy data when strategyId is provided and shouldLoadStrategy is true
+  useEffect(() => {
+    if (props.strategyId && props.shouldLoadStrategy) {
+      console.log("SearchOutput - Loading strategy:", props.strategyId);
+      loadStrategy(props.strategyId);
+    }
+  }, [props.strategyId, props.shouldLoadStrategy, loadStrategy]);
 
   const { strategyId, sessionId } = props;
   const years = Object.keys(portfolioData.ippf)
@@ -100,8 +108,8 @@ const SearchOutput = forwardRef((props, ref) => {
   };
 
   const rows =
-    portfolioData.calyears?.map((year) => ({
-      id: year.id,
+    portfolioData.calyears?.map((year, index) => ({
+      id: year.id || `year-${year.year}-${index}`,
       year: parseInt(year.year),
       yourStrategy: parseFloat((year.portfolio_cagr * 100).toFixed(2)),
       nifty50: parseFloat((year.index_cagr * 100).toFixed(2)),

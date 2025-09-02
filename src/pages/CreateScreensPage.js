@@ -49,6 +49,8 @@ export default function CreateScreens() {
   const [strategyId, setStrategyId] = useState("");
   /** State for session identifier */
   const [sessionId, setSessionId] = useState("");
+  /** State to control when to load strategy data */
+  const [shouldLoadStrategy, setShouldLoadStrategy] = useState(false);
   /** Ref for search input component */
   const searchInputRef = useRef(null);
 
@@ -60,12 +62,28 @@ export default function CreateScreens() {
     if (location.state?.initialQuery) {
       setCurrentQuery(location.state.initialQuery);
       setStrategyId(location.state.strategyId);
-      handleSearchButtonClick(
-        location.state.initialQuery,
-        location.state.sessionId
-      );
+      setShouldLoadStrategy(false); // Reset to false - user needs to click "Execute Query"
+      // Don't automatically execute - just set up the query
+      // User needs to click "Execute Query" button
     }
   }, [location.state]);
+
+  /**
+   * Effect to handle strategy loading when strategyId is provided
+   * This bypasses the SearchInput parsing and directly loads strategy data
+   */
+  useEffect(() => {
+    if (strategyId && shouldLoadStrategy) {
+      // When strategyId is provided and shouldLoadStrategy is true,
+      // directly show the output without going through SearchInput parsing
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+        setIsQueryHidden(true);
+        setShowOutput(true);
+      }, 1500);
+    }
+  }, [strategyId, shouldLoadStrategy]);
 
   /**
    * Handles search button click
@@ -77,13 +95,43 @@ export default function CreateScreens() {
   const handleSearchButtonClick = (query, session_id) => {
     setCurrentQuery(query);
     setSessionId(session_id);
-    setIsLoading(true);
-    // Simulate API call delay
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsQueryHidden(true);
-      setShowOutput(true);
-    }, 1500);
+    
+    // If we have a strategyId, load the strategy data directly
+    if (strategyId) {
+      setShouldLoadStrategy(true); // Trigger strategy loading
+      setIsLoading(true);
+      // Simulate API call delay
+      setTimeout(() => {
+        setIsLoading(false);
+        setIsQueryHidden(true);
+        setShowOutput(true);
+      }, 1500);
+    } else {
+      // Normal flow for new queries - only if no strategyId
+      setIsLoading(true);
+      // Simulate API call delay
+      setTimeout(() => {
+        setIsLoading(false);
+        setIsQueryHidden(true);
+        setShowOutput(true);
+      }, 1500);
+    }
+  };
+
+  /**
+   * Direct strategy execution when strategyId is available
+   * This bypasses the SearchInput parsing entirely
+   */
+  const handleDirectStrategyExecution = () => {
+    if (strategyId) {
+      setShouldLoadStrategy(true);
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+        setIsQueryHidden(true);
+        setShowOutput(true);
+      }, 1500);
+    }
   };
 
   /**
@@ -167,11 +215,13 @@ export default function CreateScreens() {
 
                   {/* Always render SearchInput but control visibility */}
                   <Box sx={{ display: isQueryHidden ? "none" : "block" }}>
-                    <SearchInput
-                      onSearchButtonClick={handleSearchButtonClick}
-                      ref={searchInputRef}
-                      initialQuery={currentQuery}
-                    />
+                                         <SearchInput
+                       onSearchButtonClick={handleSearchButtonClick}
+                       onDirectStrategyExecution={handleDirectStrategyExecution}
+                       hasStrategyId={!!strategyId}
+                       ref={searchInputRef}
+                       initialQuery={currentQuery}
+                     />
                   </Box>
 
                   {/* Query Popup */}
@@ -182,14 +232,16 @@ export default function CreateScreens() {
                     fullWidth
                   >
                     <DialogContent>
-                      <SearchInput
-                        initialQuery={currentQuery}
-                        onSearchButtonClick={(query) => {
-                          setIsQueryPopupOpen(false);
-                          handleSearchButtonClick(query, sessionId);
-                        }}
-                        ref={searchInputRef}
-                      />
+                                             <SearchInput
+                         initialQuery={currentQuery}
+                         onSearchButtonClick={(query) => {
+                           setIsQueryPopupOpen(false);
+                           handleSearchButtonClick(query, sessionId);
+                         }}
+                         onDirectStrategyExecution={handleDirectStrategyExecution}
+                         hasStrategyId={!!strategyId}
+                         ref={searchInputRef}
+                       />
                     </DialogContent>
                   </Dialog>
 
@@ -200,6 +252,7 @@ export default function CreateScreens() {
                         ref={searchInputRef}
                         strategyId={strategyId}
                         sessionId={sessionId}
+                        shouldLoadStrategy={shouldLoadStrategy}
                       />
                       <Box
                         sx={{

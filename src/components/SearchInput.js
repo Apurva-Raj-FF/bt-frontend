@@ -33,7 +33,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 
 const SearchInput = forwardRef(
-  ({ onSearchButtonClick, initialQuery = "" }, ref) => {
+  ({ onSearchButtonClick, onDirectStrategyExecution, hasStrategyId = false, initialQuery = "" }, ref) => {
     const [query, setQuery] = useState(
       initialQuery ||
         "DE CAGR 1 Years >= 25 AND\nPBIDT CAGR 9 Years < 40 AND\nAverage DE 6 Years > 16"
@@ -399,6 +399,12 @@ Return on capital employed > 22%
       // Check if user is not logged in
       if (!isLoggedIn) {
         setOpen(true);
+        return;
+      }
+
+      // If we have a strategyId, use direct execution to bypass query parsing
+      if (hasStrategyId && onDirectStrategyExecution) {
+        onDirectStrategyExecution();
         return;
       }
 

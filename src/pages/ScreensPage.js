@@ -122,7 +122,7 @@ const ScreenCard = ({ title, query, onViewResults }) => {
           color="text.secondary"
           sx={{ fontSize: "0.9rem", fontStyle: "italic" }}
         >
-          Query: {formatQuery(query)}
+          Query: {query}
         </Typography>
       </CardContent>
       <Box sx={{ display: "flex", justifyContent: "center", pb: 2 }}>
@@ -194,77 +194,12 @@ export default function Screens() {
 
   const handleViewResults = (query, id) => {
     navigate("/create-screens", {
-      state: { initialQuery: formatQuery(query), strategyId: id },
+      state: { initialQuery: query, strategyId: id },
     });
   };
 
   // Remove the duplicate pagination calculations since we're using backend pagination
   const isLoggedIn = !!localStorage.getItem("userName");
-
-  const defaultStrategies = [
-    {
-      title: "High Dividend Yield",
-      query:
-        '{"filters":[{"Data":{"param":{"name":"dividend_yield"},"sign":"gte","threshold":5},"Operator":"AND"},{"Data":{"param":{"name":"pe_ratio"},"sign":"lte","threshold":15},"Operator":""}]}',
-      strategy_id: "123",
-    },
-    {
-      title: "Low P/E Growth Stocks",
-      query:
-        '{"filters":[{"Data":{"param":{"name":"pe_ratio"},"sign":"lte","threshold":20},"Operator":"AND"},{"Data":{"param":{"name":"earnings_growth"},"sign":"gte","threshold":10},"Operator":""}]}',
-      strategy_id: "123",
-    },
-    {
-      title: "Undervalued Stocks",
-      query:
-        '{"filters":[{"Data":{"param":{"name":"price_to_book"},"sign":"lte","threshold":1.5},"Operator":"AND"},{"Data":{"param":{"name":"current_ratio"},"sign":"gte","threshold":1.5},"Operator":""}]}',
-      strategy_id: "123",
-    },
-    {
-      title: "Tech Momentum",
-      query:
-        '{"filters":[{"Data":{"param":{"name":"sector"},"sign":"eq","threshold":"Technology"},"Operator":"AND"},{"Data":{"param":{"name":"price_change_1y"},"sign":"gte","threshold":20},"Operator":""}]}',
-      strategy_id: "123",
-    },
-    {
-      title: "Blue Chip Stocks",
-      query:
-        '{"filters":[{"Data":{"param":{"name":"market_cap"},"sign":"gte","threshold":10000000000},"Operator":"AND"},{"Data":{"param":{"name":"dividend_yield"},"sign":"gte","threshold":2},"Operator":""}]}',
-      strategy_id: "123",
-    },
-    {
-      title: "Small Cap Value",
-      query:
-        '{"filters":[{"Data":{"param":{"name":"market_cap"},"sign":"lte","threshold":2000000000},"Operator":"AND"},{"Data":{"param":{"name":"price_to_book"},"sign":"lte","threshold":1},"Operator":""}]}',
-      strategy_id: "123",
-    },
-    {
-      title: "High ROE Stocks",
-      query:
-        '{"filters":[{"Data":{"param":{"name":"return_on_equity"},"sign":"gte","threshold":15},"Operator":"AND"},{"Data":{"param":{"name":"debt_to_equity"},"sign":"lte","threshold":0.5},"Operator":""}]}',
-      strategy_id: "123",
-    },
-    {
-      title: "Low Volatility",
-      query:
-        '{"filters":[{"Data":{"param":{"name":"beta"},"sign":"lte","threshold":0.8},"Operator":"AND"},{"Data":{"param":{"name":"dividend_yield"},"sign":"gte","threshold":3},"Operator":""}]}',
-      strategy_id: "123",
-    },
-    {
-      title: "Growth at Reasonable Price",
-      query:
-        '{"filters":[{"Data":{"param":{"name":"peg_ratio"},"sign":"lte","threshold":1.5},"Operator":"AND"},{"Data":{"param":{"name":"earnings_growth"},"sign":"gte","threshold":15},"Operator":""}]}',
-      strategy_id: "123",
-    },
-    {
-      title: "High Free Cash Flow",
-      query:
-        '{"filters":[{"Data":{"param":{"name":"free_cash_flow_yield"},"sign":"gte","threshold":5},"Operator":"AND"},{"Data":{"param":{"name":"debt_to_equity"},"sign":"lte","threshold":0.3},"Operator":""}]}',
-      strategy_id: "123",
-    },
-  ];
-
-  const allStrategiesToShow = [...defaultStrategies];
 
   return (
     <ThemeProvider theme={theme}>
@@ -360,10 +295,10 @@ export default function Screens() {
                   <Grid item xs={12} sm={6} lg={4} key={strategy.strategy_id}>
                     <ScreenCard
                       title={strategy.name || `Screen ${index + 1}`}
-                      query={strategy.strategy || "N/A"}
+                      query={strategy.formatted_query || "N/A"}
                       onViewResults={() =>
                         handleViewResults(
-                          strategy.strategy,
+                          strategy.formatted_query,
                           strategy.strategy_id
                         )
                       }
@@ -415,12 +350,12 @@ export default function Screens() {
               Sample Investment Strategies
             </Typography>
             <Typography variant="body1" color="black">
-              Explore the Sample strategies we have created for you
+              Explore the sample strategies we have created for you
             </Typography>
 
             <Grid container spacing={2} sx={{ mt: 2 }}>
-              {allStrategiesToShow.length > 0 ? (
-                allStrategiesToShow.map((strategy, index) => (
+              {allStrategies && allStrategies.length > 0 ? (
+                allStrategies.map((strategy, index) => (
                   <Grid item xs={12} sm={6} md={4} lg={2.4} key={index}>
                     <Card
                       variant="outlined"
@@ -438,8 +373,7 @@ export default function Screens() {
                         },
                       }}
                     >
-                      <CardContent sx={{ flexGrow: 1, p: 1.5 }}>
-                        {" "}
+                      <CardContent sx={{ flexGrow: 1, p: 1.5 }}>{" "}
                         {/* Reduced padding */}
                         <Typography
                           variant="subtitle2" // Smaller variant
@@ -451,9 +385,7 @@ export default function Screens() {
                             fontSize: "0.9rem", // Smaller font
                           }}
                         >
-                          {strategy.title ||
-                            strategy.name ||
-                            `Strategy ${index + 1}`}
+                          {strategy.name || `Strategy ${index + 1}`}
                         </Typography>
                         <Divider sx={{ my: 0.5, borderBottomWidth: 1 }} />{" "}
                         {/* Thinner divider */}
@@ -466,8 +398,7 @@ export default function Screens() {
                             lineHeight: 1.3, // Tighter line height
                           }}
                         >
-                          {formatQuery(strategy.query || strategy.strategy) ||
-                            "N/A"}
+                          {strategy.formatted_query || "N/A"}
                         </Typography>
                       </CardContent>
                       <Box
@@ -483,7 +414,7 @@ export default function Screens() {
                           color="success"
                           onClick={() =>
                             handleViewResults(
-                              strategy.query || strategy.strategy,
+                              strategy.formatted_query,
                               strategy.strategy_id
                             )
                           }
@@ -507,7 +438,25 @@ export default function Screens() {
                   </Grid>
                 ))
               ) : (
-                <Typography variant="body2">No strategies found</Typography>
+                <Grid item xs={12}>
+                  <Box
+                    sx={{
+                      textAlign: "center",
+                      py: 4,
+                      px: 2,
+                      backgroundColor: "rgba(255, 255, 255, 0.7)",
+                      borderRadius: 2,
+                      border: "1px dashed #ccc",
+                    }}
+                  >
+                    <Typography variant="h6" color="text.secondary" gutterBottom>
+                      No Sample Strategies Available
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Sample investment strategies will appear here once they are created.
+                    </Typography>
+                  </Box>
+                </Grid>
               )}
             </Grid>
           </Box>
@@ -583,7 +532,7 @@ export default function Screens() {
                         <TableCell
                           sx={{ fontSize: "0.9rem", fontStyle: "italic" }}
                         >
-                          {formatQuery(strategy.strategy) || "N/A"}
+                          {strategy.formatted_query || "N/A"}
                         </TableCell>
                         <TableCell align="center">
                           <Button
@@ -591,7 +540,7 @@ export default function Screens() {
                             color="success"
                             onClick={() =>
                               handleViewResults(
-                                strategy.strategy,
+                                strategy.formatted_query,
                                 strategy.strategy_id
                               )
                             }
@@ -628,7 +577,14 @@ export default function Screens() {
                   ) : (
                     <TableRow>
                       <TableCell colSpan={3} align="center">
-                        No public strategies found
+                        <Box sx={{ py: 3 }}>
+                          <Typography variant="h6" color="text.secondary" gutterBottom>
+                            No Public Strategies Available
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Public investment strategies will appear here once users create and share them.
+                          </Typography>
+                        </Box>
                       </TableCell>
                     </TableRow>
                   )}
