@@ -148,9 +148,8 @@ const LandingPage = () => {
   // Custom carousel implementation
   useEffect(() => {
     if (carouselRef.current) {
-      carouselRef.current.style.transform = `translateX(-${
-        activeIndex * 100
-      }%)`;
+      carouselRef.current.style.transform = `translateX(-${activeIndex * 100
+        }%)`;
     }
   }, [activeIndex]);
 
@@ -308,21 +307,21 @@ const LandingPage = () => {
                               ...(isMobile
                                 ? item.mobileMediaStyle
                                 : item.mediaStyle || {
-                                    width: "80%",
-                                    height: "auto",
-                                  }),
+                                  width: "80%",
+                                  height: "auto",
+                                }),
                               imageRendering: "auto",
                               display: "block",
                               boxShadow: 3,
                               "@media (prefers-reduced-motion: no-preference)":
-                                {
-                                  "&:hover": {
-                                    transform: isMobile
-                                      ? "none"
-                                      : "scale(1.02)",
-                                    transition: "transform 0.3s ease",
-                                  },
+                              {
+                                "&:hover": {
+                                  transform: isMobile
+                                    ? "none"
+                                    : "scale(1.02)",
+                                  transition: "transform 0.3s ease",
                                 },
+                              },
                             }}
                           />
                         </Box>
