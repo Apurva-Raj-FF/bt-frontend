@@ -37,16 +37,21 @@ const GoogleAuthCallback = () => {
       const token = params.get("token");
       const role = params.get("role");
 
+      console.log(email, token, role);
+
       if (email && token && role) {
+        console.log('Found data');
         // Update authentication state
         updateAuth(token, role);
 
         // Store user information
         localStorage.setItem("userName", email);
 
+        console.log('Navigating to /screens');
         // Redirect to screens page
         navigate("/screens");
       } else {
+        console.log('Navigating to /');
         // If parameters are missing, redirect to home page
         navigate("/");
       }
