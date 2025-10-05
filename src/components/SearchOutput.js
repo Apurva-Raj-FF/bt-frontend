@@ -117,9 +117,9 @@ const SearchOutput = forwardRef((props, ref) => {
 
   const rowsP = portfolioData.ippf?.[selectedYearPortfolio]
     ? portfolioData.ippf[selectedYearPortfolio]
-        .replace(/[\[\]"]/g, "")
-        .split(", ")
-        .map((name, index) => ({ id: index + 1, name: name.trim() }))
+      .replace(/[\[\]"]/g, "")
+      .split(", ")
+      .map((name, index) => ({ id: index + 1, name: name.trim() }))
     : [];
   // Modify the timePeriodsToShow array to include all 10 years
   const timePeriodsToShow = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -599,8 +599,7 @@ const SearchOutput = forwardRef((props, ref) => {
         pdf.setFontSize(11);
         // Maximum return year highlight (left-aligned)
         pdf.text(
-          `• Investing ${maxReturnYear} ${
-            maxReturnYear === 1 ? "year" : "years"
+          `• Investing ${maxReturnYear} ${maxReturnYear === 1 ? "year" : "years"
           } gives maximum expected return`,
           boxMargin,
           boxContentStartY
@@ -620,17 +619,17 @@ const SearchOutput = forwardRef((props, ref) => {
         pdf.text(
           returnHighlight,
           boxMargin +
-            10 +
-            pdf.getStringUnitWidth(returnPrefix) * pdf.internal.scaleFactor,
+          10 +
+          pdf.getStringUnitWidth(returnPrefix) * pdf.internal.scaleFactor,
           boxContentStartY + lineHeightNew
         );
         pdf.setTextColor(0, 0, 0); // Back to black
         pdf.text(
           returnSuffix,
           boxMargin +
-            20 +
-            pdf.getStringUnitWidth(returnPrefix + returnHighlight) *
-              pdf.internal.scaleFactor,
+          20 +
+          pdf.getStringUnitWidth(returnPrefix + returnHighlight) *
+          pdf.internal.scaleFactor,
           boxContentStartY + lineHeightNew
         );
 
@@ -640,17 +639,17 @@ const SearchOutput = forwardRef((props, ref) => {
         pdf.text(
           riskHighlight,
           boxMargin +
-            10 +
-            pdf.getStringUnitWidth(riskPrefix) * pdf.internal.scaleFactor,
+          10 +
+          pdf.getStringUnitWidth(riskPrefix) * pdf.internal.scaleFactor,
           boxContentStartY + lineHeightNew * 2
         );
         pdf.setTextColor(0, 0, 0); // Back to black
         pdf.text(
           riskSuffix,
           boxMargin +
-            20 +
-            pdf.getStringUnitWidth(riskPrefix + riskHighlight) *
-              pdf.internal.scaleFactor,
+          20 +
+          pdf.getStringUnitWidth(riskPrefix + riskHighlight) *
+          pdf.internal.scaleFactor,
           boxContentStartY + lineHeightNew * 2
         );
       }
@@ -871,13 +870,13 @@ const SearchOutput = forwardRef((props, ref) => {
   const [open, setOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const baseUrl = process.env.REACT_SHARE_URL || "http://localhost:3000";
+  const baseUrl = process.env.REACT_SHARE_URL || "http://localhost:3000/strategy/shared";
 
   const shareLink = sessionId
-    ? `${baseUrl}/strategy/shared/${sessionId}`
+    ? `${baseUrl}/${sessionId}`
     : strategyId
-    ? `${baseUrl}/strategy/shared/${strategyId}`
-    : `${baseUrl}/unauthorized`;
+      ? `${baseUrl}/${strategyId}`
+      : `${baseUrl}/unauthorized`;
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -1993,8 +1992,8 @@ const LineChartD3 = forwardRef(({ data, labels, dimensions, type }, ref) => {
         type === "return"
           ? "Return (%)"
           : type === "risk"
-          ? "Risk (%)"
-          : "Ratio"
+            ? "Risk (%)"
+            : "Ratio"
       );
 
     svg
@@ -2123,9 +2122,8 @@ const LineChartD3 = forwardRef(({ data, labels, dimensions, type }, ref) => {
           const legendWidth = 140; // Increased width for each legend item
           const totalWidth = legendWidth * legendData.length;
           const startX = (width - totalWidth) / 2;
-          return `translate(${startX + i * legendWidth}, ${
-            height + margin.bottom - 25
-          })`; // Moved up
+          return `translate(${startX + i * legendWidth}, ${height + margin.bottom - 25
+            })`; // Moved up
         } else {
           return `translate(${width - 40},${i * 25})`; // Increased vertical spacing
         }
@@ -2401,9 +2399,8 @@ const BarChartD3 = forwardRef(({ data, labels, dimensions }, ref) => {
           const legendWidth = 140; // Increased width for each legend item
           const totalWidth = legendWidth * legendData.length;
           const startX = (width - totalWidth) / 2;
-          return `translate(${startX + i * legendWidth}, ${
-            height + margin.bottom - 25
-          })`; // Moved up
+          return `translate(${startX + i * legendWidth}, ${height + margin.bottom - 25
+            })`; // Moved up
         } else {
           return `translate(${width - 40},${i * 25})`; // Increased vertical spacing
         }
@@ -2618,9 +2615,8 @@ const ScatterChartD3 = forwardRef(({ data, dimensions }, ref) => {
           const legendWidth = 140; // Increased width for each legend item
           const totalWidth = legendWidth * legendData.length;
           const startX = (width - totalWidth) / 2;
-          return `translate(${startX + i * legendWidth}, ${
-            height + margin.bottom - 25
-          })`; // Moved up
+          return `translate(${startX + i * legendWidth}, ${height + margin.bottom - 25
+            })`; // Moved up
         } else {
           return `translate(${width - 40},${i * 25})`; // Increased vertical spacing
         }
