@@ -22,8 +22,6 @@ __pycache__/
 *$py.class
 .venv/
 venv/
-.env
-.env.*
 .mypy_cache/
 .pytest_cache/
 .coverage
