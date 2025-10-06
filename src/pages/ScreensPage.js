@@ -176,10 +176,12 @@ export default function Screens() {
   const [publicPage, setPublicPage] = useState(1);
 
   useEffect(() => {
+    console.log(currentPage)
     fetchStrategies(currentPage);
   }, [currentPage]);
 
   useEffect(() => {
+    console.log(currentPage)
     fetchAllStrategies(publicPage);
   }, [publicPage]);
 
@@ -288,15 +290,15 @@ export default function Screens() {
                     gutterBottom
                     color="primary.main"
                   >
-                    Saved Screens
+                    Your Saved Screens
                   </Typography>
                   <Typography variant="body1" color="black">
-                    Manage and create new screening rules
+                    View Results or Edit your saved screens.
                   </Typography>
                 </Box>
               </Box>
-
-              <Grid container spacing={3} sx={{ pr: 2 }}>
+              {/* to be removed*/}
+              {/* <Grid container spacing={3} sx={{ pr: 2 }}>
                 {strategies.map((strategy, index) => (
                   <Grid item xs={12} sm={6} lg={4} key={strategy.strategy_id}>
                     <ScreenCard
@@ -311,7 +313,115 @@ export default function Screens() {
                     />
                   </Grid>
                 ))}
-              </Grid>
+              </Grid> */}
+
+              <Grid container spacing={2} sx={{ mt: 2 }}>
+                {strategies && strategies.length > 0 ? (
+                  strategies.map((strategy, index) => (
+                    <Grid item xs={12} sm={6} md={4} lg={2.4} key={index}>
+                      <Card
+                        variant="outlined"
+                        sx={{
+                          height: "100%",
+                          display: "flex",
+                          flexDirection: "column",
+                          backgroundColor: "#ffffff",
+                          borderRadius: "8px", // Smaller radius
+                          boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)", // Lighter shadow
+                          transition: "all 0.2s ease-in-out",
+                          "&:hover": {
+                            transform: "translateY(-3px)", // More subtle hover
+                            boxShadow: "0px 4px 12px rgba(0, 128, 0, 0.2)",
+                          },
+                        }}
+                      >
+                        <CardContent sx={{ flexGrow: 1, p: 1.5 }}>{" "}
+                          {/* Reduced padding */}
+                          <Typography
+                            variant="subtitle2" // Smaller variant
+                            fontWeight="bold"
+                            gutterBottom
+                            color="primary.main"
+                            sx={{
+                              textTransform: "capitalize",
+                              fontSize: "0.9rem", // Smaller font
+                            }}
+                          >
+                            {strategy.name || `Strategy ${index + 1}`}
+                          </Typography>
+                          <Divider sx={{ my: 0.5, borderBottomWidth: 1 }} />{" "}
+                          {/* Thinner divider */}
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{
+                              fontSize: "0.7rem", // Smaller font
+                              mb: 1,
+                              lineHeight: 1.3, // Tighter line height
+                            }}
+                          >
+                            {strategy.formatted_query || "N/A"}
+                          </Typography>
+                        </CardContent>
+                        <Box
+                          sx={{
+                            p: 1, // Reduced padding
+                            pt: 0,
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            alignItems: "flex-end", // Align button to bottom
+                          }}
+                        >
+                          <IconButton
+                            color="success"
+                            onClick={() =>
+                              handleViewResults(
+                                strategy.formatted_query,
+                                strategy.strategy_id
+                              )
+                            }
+                            sx={{
+                              border: "1px solid",
+                              borderColor: "success.main",
+                              borderRadius: 1.5,
+                              p: 0.3,
+                              "&:hover": {
+                                backgroundColor: "rgba(0, 128, 0, 0.1)",
+                              },
+                            }}
+                          >
+                            <ArrowForwardIcon
+                              fontSize="small"
+                              sx={{ fontSize: "0.9rem" }}
+                            />
+                          </IconButton>
+                        </Box>
+                      </Card>
+                    </Grid>
+                  ))
+                ) : (
+                  <Grid item xs={12}>
+                    <Box
+                      sx={{
+                        textAlign: "center",
+                        py: 4,
+                        px: 2,
+                        backgroundColor: "rgba(255, 255, 255, 0.7)",
+                        borderRadius: 2,
+                        border: "1px dashed #ccc",
+                      }}
+                    >
+                      <Typography variant="h6" color="text.secondary" gutterBottom>
+                        No Saved Screens Available
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Saved screens will appear here once they are created and saved.
+                      </Typography>
+                    </Box>
+                  </Grid>
+                )
+                }
+              </Grid >
               {/* Pagination for Saved Screens */}
               <Box
                 sx={{
@@ -356,7 +466,7 @@ export default function Screens() {
               Sample Investment Strategies
             </Typography>
             <Typography variant="body1" color="black">
-              Explore the sample strategies we have created for you
+              Explore the sample strategies to get started
             </Typography>
 
             <Grid container spacing={2} sx={{ mt: 2 }}>
@@ -463,9 +573,11 @@ export default function Screens() {
                     </Typography>
                   </Box>
                 </Grid>
-              )}
-            </Grid>
-          </Box>
+              )
+              }
+            </Grid >
+          </Box >
+
           <Box
             sx={{
               mt: 2,
@@ -482,7 +594,7 @@ export default function Screens() {
               Popular Investment Strategies
             </Typography>
             <Typography variant="body1" color="black">
-              Explore the interesting strategies others have created
+              Explore the interesting strategies created by other users
             </Typography>
 
             <TableContainer
@@ -622,9 +734,9 @@ export default function Screens() {
               </Box>
             </TableContainer>
           </Box>
-        </Container>
+        </Container >
         <Footer />
-      </Box>
-    </ThemeProvider>
+      </Box >
+    </ThemeProvider >
   );
 }
