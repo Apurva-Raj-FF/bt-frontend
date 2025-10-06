@@ -62,7 +62,7 @@ export default function CreateScreens() {
     if (location.state?.initialQuery) {
       setCurrentQuery(location.state.initialQuery);
       setStrategyId(location.state.strategyId);
-      setShouldLoadStrategy(false); // Reset to false - user needs to click "Execute Query"
+      setShouldLoadStrategy(location.state.loadResults); // Reset to false - user needs to click "Execute Query"
       // Don't automatically execute - just set up the query
       // User needs to click "Execute Query" button
     }
@@ -95,7 +95,7 @@ export default function CreateScreens() {
   const handleSearchButtonClick = (query, session_id) => {
     setCurrentQuery(query);
     setSessionId(session_id);
-    
+
     // If we have a strategyId, load the strategy data directly
     if (strategyId) {
       setShouldLoadStrategy(true); // Trigger strategy loading
@@ -215,13 +215,13 @@ export default function CreateScreens() {
 
                   {/* Always render SearchInput but control visibility */}
                   <Box sx={{ display: isQueryHidden ? "none" : "block" }}>
-                                         <SearchInput
-                       onSearchButtonClick={handleSearchButtonClick}
-                       onDirectStrategyExecution={handleDirectStrategyExecution}
-                       hasStrategyId={!!strategyId}
-                       ref={searchInputRef}
-                       initialQuery={currentQuery}
-                     />
+                    <SearchInput
+                      onSearchButtonClick={handleSearchButtonClick}
+                      onDirectStrategyExecution={handleDirectStrategyExecution}
+                      hasStrategyId={!!strategyId}
+                      ref={searchInputRef}
+                      initialQuery={currentQuery}
+                    />
                   </Box>
 
                   {/* Query Popup */}
@@ -232,16 +232,16 @@ export default function CreateScreens() {
                     fullWidth
                   >
                     <DialogContent>
-                                             <SearchInput
-                         initialQuery={currentQuery}
-                         onSearchButtonClick={(query) => {
-                           setIsQueryPopupOpen(false);
-                           handleSearchButtonClick(query, sessionId);
-                         }}
-                         onDirectStrategyExecution={handleDirectStrategyExecution}
-                         hasStrategyId={!!strategyId}
-                         ref={searchInputRef}
-                       />
+                      <SearchInput
+                        initialQuery={currentQuery}
+                        onSearchButtonClick={(query) => {
+                          setIsQueryPopupOpen(false);
+                          handleSearchButtonClick(query, sessionId);
+                        }}
+                        onDirectStrategyExecution={handleDirectStrategyExecution}
+                        hasStrategyId={!!strategyId}
+                        ref={searchInputRef}
+                      />
                     </DialogContent>
                   </Dialog>
 

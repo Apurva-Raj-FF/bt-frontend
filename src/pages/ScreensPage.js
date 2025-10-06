@@ -194,7 +194,13 @@ export default function Screens() {
 
   const handleViewResults = (query, id) => {
     navigate("/create-screens", {
-      state: { initialQuery: query, strategyId: id },
+      state: { initialQuery: query, strategyId: id, loadResults: true },
+    });
+  };
+
+  const handleExecuteQuery = (query, id) => {
+    navigate("/create-screens", {
+      state: { initialQuery: query, strategyId: id, loadResults: false },
     });
   };
 
@@ -297,7 +303,7 @@ export default function Screens() {
                       title={strategy.name || `Screen ${index + 1}`}
                       query={strategy.formatted_query || "N/A"}
                       onViewResults={() =>
-                        handleViewResults(
+                        handleExecuteQuery(
                           strategy.formatted_query,
                           strategy.strategy_id
                         )
@@ -413,7 +419,7 @@ export default function Screens() {
                         <IconButton
                           color="success"
                           onClick={() =>
-                            handleViewResults(
+                            handleExecuteQuery(
                               strategy.formatted_query,
                               strategy.strategy_id
                             )
